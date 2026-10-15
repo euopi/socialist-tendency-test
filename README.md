@@ -10,8 +10,9 @@ no build step and no server. Answers stay in the visitor's browser.
 push to `main` (workflow in `.github/workflows/pages.yml`). Turn it on once
 under Settings -> Pages -> Source: "GitHub Actions".
 
-Any other static host works too: point Netlify, Cloudflare Pages or Vercel at
-the `site` folder with no build command. To run it locally:
+Vercel works out of the box: `vercel.json` tells it to serve the `site` folder
+with no build step. For Netlify or Cloudflare Pages, set the publish directory
+to `site` with no build command. To run it locally:
 `python3 -m http.server -d site 8000`, then open http://localhost:8000.
 
 ## How it works
