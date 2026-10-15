@@ -1,4 +1,4 @@
-/* Twelve Axes: interface. */
+/* MarxistAxes: interface. */
 (function () {
   var TA = window.TA, E = TA.engine;
   var app = document.getElementById('app');
@@ -74,7 +74,7 @@
       : kind === 'quiz' ? '<button class="btn soft small" data-act="home">Save &amp; exit</button>'
         : '<button class="btn soft small" data-act="home">Start page</button>';
     return '<header class="top"><div class="wrap topin">' +
-      '<button class="mark" data-act="home" aria-label="Twelve Axes, start page">' + MARK + '<b>Twelve <span>Axes</span></b></button>' + nav +
+      '<button class="mark" data-act="home" aria-label="MarxistAxes, start page">' + MARK + '<b>Marxist<span>Axes</span></b></button>' + nav +
       '<div class="right"><button class="iconbtn" id="themeBtn" data-act="theme" aria-label="Switch light or dark theme">' + themeIcon() + '</button>' + action + '</div>' +
       '</div></header>';
   }
@@ -134,7 +134,7 @@
     return '<div class="stack" aria-label="Example result">' +
       '<span class="eyebrow dot exlabel">Example result</span>' +
       '<div class="ghostcard g1"><b>Luxemburgism</b></div><div class="ghostcard g2"><b>Autogestion</b></div>' +
-      '<div class="excard"><div class="exhead"><span>Twelve Axes</span><span>Result</span></div>' +
+      '<div class="excard"><div class="exhead"><span class="brand">MarxistAxes</span><span>Result</span></div>' +
       '<div class="exfam">' + esc(famName(t.fam)) + '</div><h3>' + esc(t.n) + '</h3>' +
       '<div class="exfit"><b>' + fit + '%</b><span>match</span></div>' +
       '<div class="exaxes"><div class="t">Your 12 axes</div>' + rows + '</div>' +
@@ -225,7 +225,7 @@
     });
   }
   function foot() {
-    return '<footer class="foot"><div class="wrap"><span>Twelve Axes scores you against hand-built profiles of each tendency. A match describes how close your answers are to a tradition\'s positions, not which group you should join.</span></div></footer>';
+    return '<footer class="foot"><div class="wrap"><span>MarxistAxes scores you against hand-built profiles of each tendency. A match describes how close your answers are to a tradition\'s positions, not which group you should join.</span></div></footer>';
   }
 
   /* ---------- question ---------- */
@@ -367,7 +367,7 @@
     TA.items.forEach(function (it) { if (answers[it.id] && ids.indexOf(it.id) < 0) ids.push(it.id); });
     ids = ids.filter(function (id) { return answers[id]; });
     var L = [];
-    L.push('# Twelve Axes: answers', '', 'Results code: ' + E.encode(answers), 'Questions answered: ' + ids.length, '', '## Results', '', 'Top matches:');
+    L.push('# MarxistAxes: answers', '', 'Results code: ' + E.encode(answers), 'Questions answered: ' + ids.length, '', '## Results', '', 'Top matches:');
     scores.slice(0, 6).forEach(function (s, i) { L.push((i + 1) + '. ' + s.t.n + ' (' + famName(s.t.fam) + ') ' + pct(s.fit) + '%'); });
     L.push('', 'Axes (-100 to +100):');
     TA.axes.concat(TA.supp).forEach(function (a) {
@@ -447,9 +447,9 @@
     x.textBaseline = 'alphabetic';
     // header rule
     x.font = '600 22px ' + F; spaced(x, 3.5); x.fillStyle = '#e4cfc8';
-    x.textAlign = 'left'; x.fillText('TWELVE AXES', L, yHead);
+    x.textAlign = 'left'; x.fillText('MarxistAxes', L, yHead);
     x.textAlign = 'right'; x.fillText('MY RESULT', R, yHead);
-    var lw = x.measureText('TWELVE AXES').width, rw = x.measureText('MY RESULT').width;
+    var lw = x.measureText('MarxistAxes').width, rw = x.measureText('MY RESULT').width;
     x.fillStyle = 'rgba(255,255,255,0.25)'; x.fillRect(L + lw + 24, yHead - 8, (R - rw - 24) - (L + lw + 24), 2);
     // family and name
     x.textAlign = 'left'; x.fillStyle = '#e4cfc8'; x.font = '600 21px ' + F; spaced(x, 3.5);
@@ -483,7 +483,7 @@
     if (d.school) { x.textAlign = 'left'; x.fillText(('Theory: ' + d.school.name).toUpperCase(), L, yFoot + 46); x.textAlign = 'right'; x.fillText(d.school.fit + '%', R, yFoot + 46); }
     // caption under the card
     x.textAlign = 'center'; x.fillStyle = '#57534b'; x.font = '600 24px ' + F; spaced(x, 0.5);
-    x.fillText('Twelve Axes · socialist tendency test', W / 2, cy + ch + 96);
+    x.fillText('MarxistAxes · socialist tendency test', W / 2, cy + ch + 96);
     return c;
   }
   function cardData(scores, sc, schools) {
@@ -601,7 +601,7 @@
       if (kind === 'download') {
         lastCanvas.toBlob(function (blob) {
           var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob); a.download = 'twelve-axes-result.png';
+          a.href = URL.createObjectURL(blob); a.download = 'marxistaxes-result.png';
           document.body.appendChild(a); a.click(); a.remove();
           setTimeout(function () { URL.revokeObjectURL(a.href); }, 1500);
         }, 'image/png');
@@ -656,7 +656,7 @@
         try {
           var blob = new Blob([document.getElementById('exportOut').value], { type: 'text/markdown' });
           var a = document.createElement('a');
-          a.href = URL.createObjectURL(blob); a.download = 'twelve-axes-answers.md';
+          a.href = URL.createObjectURL(blob); a.download = 'marxistaxes-answers.md';
           document.body.appendChild(a); a.click(); a.remove();
           setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
         } catch (e) { /* fall back to copy */ }

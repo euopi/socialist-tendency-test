@@ -1,4 +1,4 @@
-/* Axes, families, tags and theory schools for the Twelve Axes test. */
+/* Axes, families, tags and theory schools for the MarxistAxes test. */
 (function (G) {
   var TA = (G.TA = G.TA || {});
 

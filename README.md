@@ -1,4 +1,4 @@
-# Twelve Axes
+# MarxistAxes
 
 A socialist ideology test: 12 axes, 67 tendencies of the socialist left, adaptive
 drill-down modules, and an optional 40-question Marxist theory module. Static HTML/CSS/JS with
