@@ -15,6 +15,17 @@ with no build step. For Netlify or Cloudflare Pages, set the publish directory
 to `site` with no build command. To run it locally:
 `python3 -m http.server -d site 8000`, then open http://localhost:8000.
 
+## Results tally
+
+When someone finishes the test, the site adds one to an anonymous tally for
+their top tendency (`api/result.js`). Answers never leave the browser and no
+visitor data is stored. `stats.html` shows the most common results, read from
+`api/stats.js`. The tally lives in an Upstash Redis database: in Vercel, open
+the project's **Storage** tab, create an **Upstash for Redis** database (free
+tier) and connect it to the project, then redeploy. The functions read the
+`KV_REST_API_URL`/`KV_REST_API_TOKEN` (or `UPSTASH_REDIS_REST_*`) variables the
+integration adds.
+
 ## How it works
 
 1. **Core (125 questions).** Eight per axis (fifteen for the two strategy axes,
@@ -52,6 +63,8 @@ well (best match under 70%), the results page says so.
     tools/validate.js           synthetic-respondent and persona validation
     tools/personas.js           hand-written answer sheets for 18 real positions
     tools/build-artifact.js     single-file bundle -> dist/
+    api/                        Vercel functions for the results tally
+    site/stats.html             results tally page
 
 ## Validation
 

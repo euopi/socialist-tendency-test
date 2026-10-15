@@ -154,7 +154,7 @@
     }).join('');
     var faq = [
       ['How long does it take?', c.all + ' questions in total, about 40 to 50 minutes. Most answers take one tap, and your progress is saved in this browser, so you can stop and come back whenever you like.'],
-      ['Are my answers collected anywhere?', 'No. The test runs entirely in your browser. Answers are stored only in this browser\'s local storage, and the results code you can copy contains them so you can reopen or share your result yourself.'],
+      ['Are my answers collected anywhere?', 'No. The test runs entirely in your browser, and your answers are stored only in this browser. The one thing the site records is an anonymous tally of which tendency comes out on top when someone finishes, so we can see the most common results. No answers, IP addresses or identifiers are stored with it.'],
       ['How is my result calculated?', 'Each tendency has a hand-built position on every scale. For agree/disagree questions the test compares your answer with what each tendency would say; for multiple-choice questions each option sits at a position on the scales, so in-between answers count as themselves. Where a tradition has a specific documented line, that answer is set by hand. Drill-down answers only reorder tendencies within their own family.'],
       ['Why are so many questions scenarios with several options?', 'Real positions are often hybrids, like a democratic rupture or legitimate illegality. A scale running only between two poles would average those positions into the middle and misread them.'],
       ['Why does it ask about history?', 'Judgments about Kronstadt, the Constituent Assembly, Hungary 1956 or the historic compromise separate tendencies that sound alike in the abstract. Each historical question has a one-line summary, and you can mark any of them as unfamiliar.'],
@@ -506,11 +506,22 @@
     Promise.race([fontsReady, timeout]).then(draw, draw);
   }
 
+  // Adds this test's top result to the anonymous tally, once per completed test.
+  // Only the tendency id is sent; answers never leave the browser.
+  function tally(id) {
+    if (S.shared || S.counted || inFrame || !/^https?:$/.test(location.protocol)) return;
+    S.counted = true; save();
+    try {
+      fetch('/api/result', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ t: id }), keepalive: true }).catch(function () { /* offline or not deployed */ });
+    } catch (e) { /* ignore */ }
+  }
+
   function renderResults() {
     if (!S.shared && !S.done) { S.done = true; save(); }
     var answers = S.answers;
     var scores = E.scoreTendencies(answers), top = scores[0], second = scores[1];
     var sc = E.scaleScores(answers), tags = E.tags(answers, sc), schools = E.scoreSchools(answers);
+    tally(top.t.id);
     var core = E.answered(answers, 'core'), coreL = core.filter(function (a) { return a.it.t === 'l'; });
     var notes = [];
     if (core.length < CORE_N / 2) notes.push('You answered fewer than half of the core questions, so these results rest on thin evidence.');
