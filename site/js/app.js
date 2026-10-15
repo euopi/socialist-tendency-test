@@ -411,79 +411,64 @@
   }
   function spaced(x, px) { if ('letterSpacing' in x) x.letterSpacing = px + 'px'; }
   function drawCard(d) {
+    // Full-bleed card: the whole image is the card, laid out on a 1080px-wide grid.
     var F = '"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif';
-    var W = 1080, cw = 720, cx = (W - cw) / 2, cy = 150, pad = 56, inner = cw - pad * 2;
+    var W = 1080, pad = 84, inner = W - pad * 2;
     var meas = document.createElement('canvas').getContext('2d');
-    var nameSize = 66;
+    var nameSize = 96;
     meas.font = '800 ' + nameSize + 'px ' + F;
     var nameLines = wrapLines(meas, d.name, inner);
-    while (nameLines.length > 2 && nameSize > 44) { nameSize -= 4; meas.font = '800 ' + nameSize + 'px ' + F; nameLines = wrapLines(meas, d.name, inner); }
-    var rowH = 44, panelH = 74 + rowH * d.rows.length + 22;
-    var yHead = cy + pad + 18, yFam = yHead + 72, yName = yFam + 22 + nameSize;
+    while (nameLines.length > 2 && nameSize > 60) { nameSize -= 4; meas.font = '800 ' + nameSize + 'px ' + F; nameLines = wrapLines(meas, d.name, inner); }
+    var rowH = 58, panelH = 104 + rowH * d.rows.length + 26;
+    var yHead = pad + 34, yFam = yHead + 104, yName = yFam + 30 + nameSize;
     var yNameEnd = yName + (nameLines.length - 1) * (nameSize * 1.04);
-    var yFit = yNameEnd + 128, yPanel = yFit + 44, yFoot = yPanel + panelH + 58;
-    var ch = (yFoot + (d.school ? 46 : 0) + pad - 6) - cy;
-    var H = cy + ch + 150;
+    var yFit = yNameEnd + 176, yPanel = yFit + 60, yFoot = yPanel + panelH + 84;
+    var H = yFoot + (d.school ? 62 : 0) + pad - 10;
     var c = document.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d');
-    x.fillStyle = '#f4f1ea'; x.fillRect(0, 0, W, H);
-    // the two cards behind
-    [[-7, '#2c2a26', -130, d.ghosts[0]], [6, '#b8892f', 130, d.ghosts[1]]].forEach(function (g) {
-      x.save(); x.translate(W / 2 + g[2], cy + ch / 2 + 20); x.rotate(g[0] * Math.PI / 180);
-      x.shadowColor = 'rgba(40,30,20,0.18)'; x.shadowBlur = 40; x.shadowOffsetY = 16;
-      rrect(x, -cw * 0.43, -ch * 0.44, cw * 0.86, ch * 0.88, 52); x.fillStyle = g[1]; x.fill();
-      x.shadowColor = 'transparent';
-      if (g[3]) { x.font = '700 22px ' + F; spaced(x, 3); x.fillStyle = 'rgba(255,255,255,0.72)'; x.textAlign = 'left'; x.fillText(g[3].toUpperCase(), -cw * 0.43 + 40, -ch * 0.44 + 62); }
-      x.restore();
-    });
-    // main card
-    x.save();
-    x.shadowColor = 'rgba(58,16,22,0.38)'; x.shadowBlur = 90; x.shadowOffsetY = 34;
-    rrect(x, cx, cy, cw, ch, 56);
-    var grad = x.createRadialGradient(cx + cw, cy, 0, cx + cw, cy, cw * 1.45);
+    var grad = x.createRadialGradient(W, 0, 0, W, 0, Math.max(W, H) * 1.25);
     grad.addColorStop(0, '#7a2230'); grad.addColorStop(0.55, '#4a121b'); grad.addColorStop(1, '#33090f');
-    x.fillStyle = grad; x.fill(); x.restore();
-    var L = cx + pad, R = cx + cw - pad;
+    x.fillStyle = grad; x.fillRect(0, 0, W, H);
+    var L = pad, R = W - pad;
     x.textBaseline = 'alphabetic';
     // header rule
-    x.font = '600 22px ' + F; spaced(x, 3.5); x.fillStyle = '#e4cfc8';
+    x.font = '700 30px ' + F; spaced(x, 1.5); x.fillStyle = '#f7efe6';
     x.textAlign = 'left'; x.fillText('MarxistAxes', L, yHead);
+    var lw = x.measureText('MarxistAxes').width;
+    x.font = '600 28px ' + F; spaced(x, 5); x.fillStyle = '#e4cfc8';
     x.textAlign = 'right'; x.fillText('MY RESULT', R, yHead);
-    var lw = x.measureText('MarxistAxes').width, rw = x.measureText('MY RESULT').width;
-    x.fillStyle = 'rgba(255,255,255,0.25)'; x.fillRect(L + lw + 24, yHead - 8, (R - rw - 24) - (L + lw + 24), 2);
+    var rw = x.measureText('MY RESULT').width;
+    x.fillStyle = 'rgba(255,255,255,0.25)'; x.fillRect(L + lw + 32, yHead - 10, (R - rw - 32) - (L + lw + 32), 2);
     // family and name
-    x.textAlign = 'left'; x.fillStyle = '#e4cfc8'; x.font = '600 21px ' + F; spaced(x, 3.5);
+    x.textAlign = 'left'; x.fillStyle = '#e4cfc8'; x.font = '600 28px ' + F; spaced(x, 5);
     x.fillText(d.fam.toUpperCase(), L, yFam);
-    x.fillStyle = '#f7efe6'; x.font = '800 ' + nameSize + 'px ' + F; spaced(x, -1.5);
+    x.fillStyle = '#f7efe6'; x.font = '800 ' + nameSize + 'px ' + F; spaced(x, -2.5);
     nameLines.forEach(function (ln, i) { x.fillText(ln, L, yName + i * nameSize * 1.04); });
     // match
-    x.font = '800 112px ' + F; spaced(x, -4); x.fillStyle = '#f7efe6';
+    x.font = '800 160px ' + F; spaced(x, -6); x.fillStyle = '#f7efe6';
     var fitTxt = d.fit + '%'; x.fillText(fitTxt, L, yFit);
     var fw = x.measureText(fitTxt).width;
-    x.font = '600 22px ' + F; spaced(x, 3.5); x.fillStyle = '#e4cfc8'; x.fillText('MATCH', L + fw + 20, yFit);
+    x.font = '600 28px ' + F; spaced(x, 5); x.fillStyle = '#e4cfc8'; x.fillText('MATCH', L + fw + 28, yFit);
     // axes panel
-    rrect(x, L, yPanel, inner, panelH, 34); x.fillStyle = 'rgba(0,0,0,0.24)'; x.fill();
-    var pl = L + 30, pr = L + inner - 30;
-    x.font = '600 19px ' + F; spaced(x, 3.5); x.fillStyle = '#e4cfc8'; x.fillText('MY 12 AXES', pl, yPanel + 52);
+    rrect(x, L, yPanel, inner, panelH, 44); x.fillStyle = 'rgba(0,0,0,0.24)'; x.fill();
+    var pl = L + 42, pr = L + inner - 42, barW = 190;
+    x.font = '600 25px ' + F; spaced(x, 5); x.fillStyle = '#e4cfc8'; x.textAlign = 'left'; x.fillText('MY 12 AXES', pl, yPanel + 68);
     d.rows.forEach(function (r, i) {
-      var y = yPanel + 74 + rowH * (i + 1) - 14;
-      var fs = 25, room = pr - 92 - 130 - pl - 18;
+      var y = yPanel + 104 + rowH * (i + 1) - 18;
+      var fs = 33, room = pr - 120 - barW - pl - 24;
       x.font = '500 ' + fs + 'px ' + F; spaced(x, 0);
-      while (x.measureText(r.name).width > room && fs > 17) { fs--; x.font = '500 ' + fs + 'px ' + F; }
+      while (x.measureText(r.name).width > room && fs > 22) { fs--; x.font = '500 ' + fs + 'px ' + F; }
       x.fillStyle = '#f7efe6'; x.textAlign = 'left'; x.fillText(r.name, pl, y);
-      x.textAlign = 'right'; x.fillStyle = '#f2b8a8'; x.font = '600 24px ' + F; x.fillText(r.share + '%', pr, y);
-      var bx = pr - 92 - 130, by = y - 12;
-      rrect(x, bx, by, 130, 8, 4); x.fillStyle = 'rgba(255,255,255,0.18)'; x.fill();
-      rrect(x, bx, by, Math.max(8, 130 * r.share / 100), 8, 4); x.fillStyle = '#f2b8a8'; x.fill();
+      x.textAlign = 'right'; x.fillStyle = '#f2b8a8'; x.font = '600 32px ' + F; x.fillText(r.share + '%', pr, y);
+      var bx = pr - 120 - barW, by = y - 15;
+      rrect(x, bx, by, barW, 10, 5); x.fillStyle = 'rgba(255,255,255,0.18)'; x.fill();
+      rrect(x, bx, by, Math.max(10, barW * r.share / 100), 10, 5); x.fillStyle = '#f2b8a8'; x.fill();
     });
     // footer
-    x.textAlign = 'left'; x.font = '600 20px ' + F; spaced(x, 3); x.fillStyle = '#e4cfc8';
+    x.textAlign = 'left'; x.font = '600 27px ' + F; spaced(x, 4); x.fillStyle = '#e4cfc8';
     x.fillText(('Runner-up: ' + d.runner.name).toUpperCase(), L, yFoot);
     x.textAlign = 'right'; x.fillText(d.runner.fit + '%', R, yFoot);
-    if (d.school) { x.textAlign = 'left'; x.fillText(('Theory: ' + d.school.name).toUpperCase(), L, yFoot + 46); x.textAlign = 'right'; x.fillText(d.school.fit + '%', R, yFoot + 46); }
-    // caption under the card
-    x.textAlign = 'center'; x.fillStyle = '#57534b'; x.font = '600 24px ' + F; spaced(x, 0.5);
-    x.fillText('MarxistAxes · socialist tendency test', W / 2, cy + ch + 96);
+    if (d.school) { x.textAlign = 'left'; x.fillText(('Theory: ' + d.school.name).toUpperCase(), L, yFoot + 62); x.textAlign = 'right'; x.fillText(d.school.fit + '%', R, yFoot + 62); }
     return c;
   }
   function cardData(scores, sc, schools) {
@@ -493,8 +478,7 @@
       fam: famName(top.t.fam), name: top.t.n, fit: pct(top.fit),
       rows: TA.axes.map(function (a) { var st = strength(sc[a.id] ? sc[a.id].v : null, a); return { name: st.pole || (a.n + ': balanced'), share: st.share === null ? 50 : st.share }; }),
       runner: { name: trim(scores[1].t.n), fit: pct(scores[1].fit) },
-      school: schools ? { name: trim(schools[0].s.n), fit: pct(schools[0].fit) } : null,
-      ghosts: [scores[2] ? scores[2].t.n : '', scores[1].t.n]
+      school: schools ? { name: trim(schools[0].s.n), fit: pct(schools[0].fit) } : null
     };
   }
   function buildImage(d) {
@@ -509,7 +493,7 @@
       } catch (e) { document.getElementById('cardErr').hidden = false; }
     };
     var fontsReady = document.fonts && document.fonts.load
-      ? Promise.all(['500 25px "Plus Jakarta Sans"', '600 22px "Plus Jakarta Sans"', '800 66px "Plus Jakarta Sans"'].map(function (f) { return document.fonts.load(f); }))
+      ? Promise.all(['500 33px "Plus Jakarta Sans"', '600 28px "Plus Jakarta Sans"', '700 30px "Plus Jakarta Sans"', '800 96px "Plus Jakarta Sans"'].map(function (f) { return document.fonts.load(f); }))
       : Promise.resolve();
     var timeout = new Promise(function (res) { setTimeout(res, 2500); });
     Promise.race([fontsReady, timeout]).then(draw, draw);
