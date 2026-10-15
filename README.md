@@ -6,15 +6,13 @@ no build step and no server. Answers stay in the visitor's browser.
 
 ## Hosting it
 
-`site/` is the whole website. Any static host works:
+`site/` is the whole website. GitHub Pages deploys it automatically on every
+push to `main` (workflow in `.github/workflows/pages.yml`). Turn it on once
+under Settings -> Pages -> Source: "GitHub Actions".
 
-- **GitHub Pages**: the workflow in `.github/workflows/twelve-axes-pages.yml`
-  deploys `twelve-axes/site`. Enable it once under the repository's
-  Settings -> Pages -> Source: "GitHub Actions", then push or run the workflow.
-- **Netlify / Cloudflare Pages / Vercel**: point the publish directory at
-  `twelve-axes/site` (no build command), or drag the folder into Netlify Drop.
-- **Locally**: `python3 -m http.server -d twelve-axes/site 8000`, then open
-  http://localhost:8000.
+Any other static host works too: point Netlify, Cloudflare Pages or Vercel at
+the `site` folder with no build command. To run it locally:
+`python3 -m http.server -d site 8000`, then open http://localhost:8000.
 
 ## How it works
 
