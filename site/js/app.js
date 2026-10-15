@@ -423,7 +423,8 @@
     var yHead = pad + 34, yFam = yHead + 104, yName = yFam + 30 + nameSize;
     var yNameEnd = yName + (nameLines.length - 1) * (nameSize * 1.04);
     var yFit = yNameEnd + 176, yPanel = yFit + 60, yFoot = yPanel + panelH + 84;
-    var H = yFoot + (d.school ? 62 : 0) + pad - 10;
+    var yLast = yFoot + (d.school ? 62 : 0), yRule = yLast + 58, yUrl = yRule + 82;
+    var H = yUrl + pad - 6;
     var c = document.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d');
     var grad = x.createRadialGradient(W, 0, 0, W, 0, Math.max(W, H) * 1.25);
@@ -469,6 +470,12 @@
     x.fillText(('Runner-up: ' + d.runner.name).toUpperCase(), L, yFoot);
     x.textAlign = 'right'; x.fillText(d.runner.fit + '%', R, yFoot);
     if (d.school) { x.textAlign = 'left'; x.fillText(('Theory: ' + d.school.name).toUpperCase(), L, yFoot + 62); x.textAlign = 'right'; x.fillText(d.school.fit + '%', R, yFoot + 62); }
+    // site address
+    x.fillStyle = 'rgba(255,255,255,0.25)'; x.fillRect(L, yRule, inner, 2);
+    x.textAlign = 'left'; x.font = '800 44px ' + F; spaced(x, -0.5); x.fillStyle = '#f7efe6';
+    x.fillText('marxistaxes.vercel.app', L, yUrl);
+    x.textAlign = 'right'; x.font = '600 26px ' + F; spaced(x, 4); x.fillStyle = '#e4cfc8';
+    x.fillText('TAKE THE TEST', R, yUrl - 6);
     return c;
   }
   function cardData(scores, sc, schools) {
@@ -493,7 +500,7 @@
       } catch (e) { document.getElementById('cardErr').hidden = false; }
     };
     var fontsReady = document.fonts && document.fonts.load
-      ? Promise.all(['500 33px "Plus Jakarta Sans"', '600 28px "Plus Jakarta Sans"', '700 30px "Plus Jakarta Sans"', '800 96px "Plus Jakarta Sans"'].map(function (f) { return document.fonts.load(f); }))
+      ? Promise.all(['500 33px "Plus Jakarta Sans"', '600 28px "Plus Jakarta Sans"', '700 30px "Plus Jakarta Sans"', '800 96px "Plus Jakarta Sans"', '800 44px "Plus Jakarta Sans"'].map(function (f) { return document.fonts.load(f); }))
       : Promise.resolve();
     var timeout = new Promise(function (res) { setTimeout(res, 2500); });
     Promise.race([fontsReady, timeout]).then(draw, draw);
